@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Product{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .form-section {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .image-preview {
+            max-width: 300px;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .image-preview img {
+            max-width: 100%;
+            display: none;
+            margin-top: 1rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .help-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-section">
+                    <h1 class="h3 mb-4 text-center">Create New Product</h1>
+
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.title, {'attr': {'class': 'form-control' ~ (form.title.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Enter product title'}}) }}
+                                    {{ form_errors(form.title, {'attr': {'class': 'invalid-feedback'}}) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.category, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.shortDescription, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.shortDescription, {'attr': {'class': 'form-control' ~ (form.shortDescription.vars.valid ? '' : ' is-invalid'), 'rows': 5, 'placeholder': 'Describe your product...'}}) }}
+                            <div class="help-text">Provide a detailed description of your product</div>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.price, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': '0.00'}}) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.vat, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.vat, {'attr': {'class': 'form-control', 'placeholder': '0.00'}}) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form_label(form.image, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    <div class="image-preview">
+                                        <label for="product_image" class="d-block">
+                                            <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
+                                            <p class="mb-0">Click to upload or drag and drop</p>
+                                            <p class="small text-muted">PNG, JPG up to 5MB</p>
+                                        </label>
+                                        {{ form_widget(form.image, {'attr': {'class': 'form-control', 'accept': 'image/*'}}) }}
+                                        <img id="preview" src="#" alt="Preview">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_product_index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Create Product
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.getElementById('product_image').onchange = function(evt) {
+            const [file] = this.files;
+            if (file) {
+                const preview = document.getElementById('preview');
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+            }
+        };
+    </script>
+{% endblock %}

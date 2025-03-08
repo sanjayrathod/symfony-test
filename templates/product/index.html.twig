@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Products{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mb-4">Products</h1>
+        
+        <div class="d-flex justify-content-between mb-4">
+            <a href="{{ path('app_product_new') }}" class="btn btn-primary">Add New Product</a>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Filter by Category
+                </button>
+                <ul class="dropdown-menu">
+                    {% for category in ['Electronics', 'Books', 'Clothing', 'Food'] %}
+                        <li class="{% if app.request.query.get('category') == category %}selected{% endif %}">
+                            <a class="dropdown-item" href="{{ path('app_product_index', {'category': category}) }}">
+                                {{ category }}
+                                {% if app.request.query.get('category') == category %}
+                                    <i class="fas fa-check ms-2"></i>
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for product in pagination %}
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ product.image }}" class="card-img-top" alt="{{ product.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.title }}</h5>
+                            <p class="card-text">₹{{ product.price|number_format(2, '.', ',') }}</p>
+                            <span class="badge bg-secondary">{{ product.category }}</span>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-info">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Custom CSS for pagination #}
+        {% block stylesheets %}
+            {{ parent() }}
+            <style>
+                .pagination {
+                    margin: 2rem 0;
+                    gap: 5px;
+                }
+                .pagination .page-item .page-link {
+                    padding: 0.75rem 1rem;
+                    border-radius: 8px;
+                    color: #6c757d;
+                    background: #f8f9fa;
+                    border: none;
+                    transition: all 0.3s ease;
+                }
+                .pagination .page-item.active .page-link {
+                    background: #0d6efd;
+                    color: white;
+                    transform: scale(1.05);
+                }
+                .pagination .page-item .page-link:hover {
+                    background: #e9ecef;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                }
+                .pagination .page-item.disabled .page-link {
+                    background: #e9ecef;
+                    color: #adb5bd;
+                }
+
+                .dropdown-menu li.selected {
+                    background-color: #f8f9fa;
+                }
+                .dropdown-menu li.selected a {
+                    font-weight: bold;
+                }
+            </style>
+        {% endblock %}
+
+        <div class="d-flex justify-content-center">
+            {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
